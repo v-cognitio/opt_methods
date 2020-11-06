@@ -1,4 +1,6 @@
 import math
+import csv
+import os
 
 
 def f1(x):
@@ -21,12 +23,29 @@ def f5(x):
     return 0.2 * x * math.log10(x) + (x - 2.3) ** 2
 
 
+def open_file(method, f):
+    filename = method + '/' + f.__str__().split()[1] + '.csv'
+    if not os.path.exists(os.path.dirname(filename)):
+        os.makedirs(os.path.dirname(filename))
+    file = open(filename, 'w')
+    writer = csv.writer(file)
+    writer.writerow(['A', 'B', 'len', 'len / len - 1', 'x1', 'x2', 'f(x1)', 'f(x2)'])
+    return writer
+
+
 def dichotomy(f, a, b, e):
+    writer = open_file('dichotomy', f)
+    prev_len = b - a
+
     while b - a > e:
         x1 = (a + b - e / 2) / 2
         x2 = (a + b + e / 2) / 2
         fx1 = f(x1)
         fx2 = f(x2)
+
+        writer.writerow([round(a, 10) for a in [a, b, b - a, (b - a) / prev_len, x1, x2, fx1, fx2]])
+        prev_len = b - a
+
         if fx1 < fx2:
             b = x2
         elif fx1 > fx2:
@@ -37,19 +56,26 @@ def dichotomy(f, a, b, e):
 
     if f(a) < f(b):
         r = (a, f(a))
-        return r
     else:
         r = (b, f(b))
-        return r
+
+    return r
 
 
 def golden_ratio(f, a, b, e):
+    writer = open_file('golden', f)
+    prev_len = b - a
+
     c = (math.sqrt(5) - 1) / 2
     x1 = b - c * (b - a)
     x2 = a + c * (b - a)
     fx1 = f(x1)
     fx2 = f(x2)
+
     while b - a >= e:
+        writer.writerow([round(e, 10) for e in [a, b, b - a, (b - a) / prev_len, x1, x2, fx1, fx2]])
+        prev_len = b - a
+
         if fx1 < fx2:
             b = x2
             x2 = x1
@@ -81,6 +107,9 @@ def calc_fibb_till(e):
 
 
 def fibb(f, a, b, e):
+    writer = open_file('fibb', f)
+    prev_len = b - a
+
     fibs = calc_fibb_till((b - a) / e)
     n = len(fibs) - 1
     k = 0
@@ -89,6 +118,9 @@ def fibb(f, a, b, e):
     fx1 = f(x1)
     fx2 = f(x2)
     while b - a >= e:
+        writer.writerow([round(e, 10) for e in [a, b, b - a, (b - a) / prev_len, x1, x2, fx1, fx2]])
+        prev_len = b - a
+
         if fx1 < fx2:
             b = x2
             x2 = x1
@@ -112,6 +144,9 @@ def fibb(f, a, b, e):
 
 
 def parabolic(f, a, b, e):
+    writer = open_file('parabolic', f)
+    prev_len = b - a
+
     x1 = a
     x3 = b
     x2 = (x1 + x3) / 2
@@ -127,6 +162,8 @@ def parabolic(f, a, b, e):
     fu = f(u)
 
     while abs(u - u1) >= e:
+        a = x1
+        b = x3
         if x2 > u:
             if fu > fx2:
                 x1 = u
@@ -146,13 +183,16 @@ def parabolic(f, a, b, e):
                 fx2 = fu
                 fx1 = fx2
 
+        writer.writerow([round(e, 10) for e in [a, b, b - a, (b - a) / prev_len, x1, x2, fx1, fx2]])
+        prev_len = b - a
+
         u1 = u
         u = x2 - ((x2 - x1) ** 2 * (fx2 - fx3) - (x2 - x3) ** 2 * (fx2 - fx1)) / \
             (2 * ((x2 - x1) * (fx2 - fx3) - (x2 - x3) * (fx2 - fx1)))
 
         fu = f(u)
 
-    r = (u, f(u))
+    r = (u, fu)
     return r
 
 
