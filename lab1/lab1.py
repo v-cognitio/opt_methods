@@ -36,8 +36,10 @@ def open_file(method, f):
 def dichotomy(f, a, b, e):
     writer = open_file('dichotomy', f)
     prev_len = b - a
+    N = 0
 
     while b - a > e:
+        N += 1
         x1 = (a + b - e / 2) / 2
         x2 = (a + b + e / 2) / 2
         fx1 = f(x1)
@@ -59,12 +61,13 @@ def dichotomy(f, a, b, e):
     else:
         r = (b, f(b))
 
-    return r
+    return r, N
 
 
 def golden_ratio(f, a, b, e):
     writer = open_file('golden', f)
     prev_len = b - a
+    N = 0
 
     c = (math.sqrt(5) - 1) / 2
     x1 = b - c * (b - a)
@@ -73,6 +76,7 @@ def golden_ratio(f, a, b, e):
     fx2 = f(x2)
 
     while b - a >= e:
+        N += 1
         writer.writerow([round(e, 10) for e in [a, b, b - a, (b - a) / prev_len, x1, x2, fx1, fx2]])
         prev_len = b - a
 
@@ -91,10 +95,10 @@ def golden_ratio(f, a, b, e):
 
     if f(a) < f(b):
         r = (a, f(a))
-        return r
     else:
         r = (b, f(b))
-        return r
+
+    return r, N
 
 
 def calc_fibb_till(e):
@@ -109,6 +113,7 @@ def calc_fibb_till(e):
 def fibb(f, a, b, e):
     writer = open_file('fibb', f)
     prev_len = b - a
+    N = 0
 
     fibs = calc_fibb_till((b - a) / e)
     n = len(fibs) - 1
@@ -118,6 +123,7 @@ def fibb(f, a, b, e):
     fx1 = f(x1)
     fx2 = f(x2)
     while b - a >= e:
+        N += 1
         writer.writerow([round(e, 10) for e in [a, b, b - a, (b - a) / prev_len, x1, x2, fx1, fx2]])
         prev_len = b - a
 
@@ -137,15 +143,16 @@ def fibb(f, a, b, e):
 
     if f(a) < f(b):
         r = (a, f(a))
-        return r
     else:
         r = (b, f(b))
-        return r
+
+    return r, N
 
 
 def parabolic(f, a, b, e):
     writer = open_file('parabolic', f)
     prev_len = b - a
+    N = 0
 
     x1 = a
     x3 = b
@@ -162,6 +169,7 @@ def parabolic(f, a, b, e):
     fu = f(u)
 
     while abs(u - u1) >= e:
+        N += 1
         a = x1
         b = x3
         if x2 > u:
@@ -193,7 +201,7 @@ def parabolic(f, a, b, e):
         fu = f(u)
 
     r = (u, fu)
-    return r
+    return r, N
 
 
 def parabmin(x1, x2, x3, fx1, fx2, fx3):
@@ -205,6 +213,7 @@ def parabmin(x1, x2, x3, fx1, fx2, fx3):
 def brent(f, a, b, e):
     writer = open_file('brent', f)
     prev_len = b - a
+    N = 0
 
     eps = e
     c = b
@@ -221,6 +230,7 @@ def brent(f, a, b, e):
     last = [a, c]
     current = [a, c, f(a), f(b)]
     while c - a >= eps:
+        N += 1
         g = e
         e = d
         un = u
@@ -277,7 +287,7 @@ def brent(f, a, b, e):
                          [last[0], last[1], last[0] - last[1],
                           (c - a) / (last[1] - last[0]), a, c, current[2], current[3]]])
 
-    return u, fu
+    return (u, fu), N
 
 
 # TODO: do it in cycle with arrays of functions, intervals and methods
