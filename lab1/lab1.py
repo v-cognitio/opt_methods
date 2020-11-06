@@ -124,29 +124,33 @@ def parabolic(f, a, b, e):
         (2 * ((x2 - x1) * (fx2 - fx3) - (x2 - x3) * (fx2 - fx1)))
     u1 = x1
 
+    fu = f(u)
+
     while abs(u - u1) >= e:
         if x2 > u:
-            if f(u) > f(x2):
+            if fu > fx2:
                 x1 = u
-                x2 = (x1 + x3) / 2
+                fx1 = fu
             else:
                 x3 = x2
-                x2 = (x1 + x3) / 2
+                x2 = u
+                fx2 = fu
+                fx3 = fx2
         else:
-            if f(u) > f(x2):
+            if fu > fx2:
                 x3 = u
-                x2 = (x1 + x3) / 2
+                fx3 = fu
             else:
                 x1 = x2
-                x2 = (x1 + x3) / 2
-
-        fx1 = f(x1)
-        fx2 = f(x2)
-        fx3 = f(x3)
+                x2 = u
+                fx2 = fu
+                fx1 = fx2
 
         u1 = u
         u = x2 - ((x2 - x1) ** 2 * (fx2 - fx3) - (x2 - x3) ** 2 * (fx2 - fx1)) / \
             (2 * ((x2 - x1) * (fx2 - fx3) - (x2 - x3) * (fx2 - fx1)))
+
+        fu = f(u)
 
     r = (u, f(u))
     return r
