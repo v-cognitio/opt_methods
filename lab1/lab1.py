@@ -203,6 +203,9 @@ def parabmin(x1, x2, x3, fx1, fx2, fx3):
 
 
 def brent(f, a, b, e):
+    writer = open_file('brent', f)
+    prev_len = b - a
+
     eps = e
     c = b
     x = (a + c)/2
@@ -215,6 +218,8 @@ def brent(f, a, b, e):
     d = c - a
     e = d
     u = parabmin(a, x, b, f(a), fx, f(b))
+    last = [a, c]
+    current = [a, c, f(a), f(b)]
     while c - a >= eps:
         g = e
         e = d
@@ -229,7 +234,7 @@ def brent(f, a, b, e):
             fx2 = fxu[1]
             fx3 = fxu[2]
             un = parabmin(x1, x2, x3, fx1, fx2, fx3)
-        if un >= a + eps and un <= c - eps and abs(un-x) < g/2:
+        if a + eps <= un <= c - eps and abs(un - x) < g/2:
             u = un
             d = abs(u - x)
         else:
@@ -242,6 +247,7 @@ def brent(f, a, b, e):
         if d < eps:
             u = x + math.copysign(1, u - x) * eps
         fu = f(u)
+        last = [a, c]
         if fu <= fx:
             if u >= x:
                 a = x
@@ -266,6 +272,11 @@ def brent(f, a, b, e):
             elif fu <= fv or v == x or v == w:
                 v = u
                 fv = fu
+        current = [a, c, f(a), f(b)]
+        writer.writerow([round(e, 10) for e in
+                         [last[0], last[1], last[0] - last[1],
+                          (c - a) / (last[1] - last[0]), a, c, current[2], current[3]]])
+
     return u, fu
 
 
@@ -275,35 +286,35 @@ print("info: (x, f(x))\n")
 print("dich for f1:     ", dichotomy(f1, -0.5, 0.5, 0.00001))
 print("golden for f1:   ", golden_ratio(f1, -0.5, 0.5, 0.00001))
 print("fibb for f1:     ", fibb(f1, -0.5, 0.5, 0.00001))
-print("parabolic for f1:   ", parabolic(f1, -0.5, 0.5, 0.00001))
-print("brent for f1:   ", brent(f1, -0.5, 0.5, 0.00001))
+print("parabolic for f1:", parabolic(f1, -0.5, 0.5, 0.00001))
+print("brent for f1:    ", brent(f1, -0.5, 0.5, 0.00001))
 print()
 
 print("dich for f2:     ", dichotomy(f2, 6, 9.9, 0.00001))
 print("golden for f2:   ", golden_ratio(f2, 6, 9.9, 0.00001))
 print("fibb for f2:     ", fibb(f2, 6, 9.9, 0.00001))
 print("parabolic for f2:", parabolic(f2, 6, 9.9, 0.00001))
-print("brent for f2:   ", brent(f2, 6, 9.9, 0.00001))
+print("brent for f2:    ", brent(f2, 6, 9.9, 0.00001))
 print()
 
 print("dich for f3:     ", dichotomy(f3, 0, 2 * math.pi, 0.00001))
 print("golden for f3:   ", golden_ratio(f3, 0, 2 * math.pi, 0.00001))
 print("fibb for f3:     ", fibb(f3, 0, 2 * math.pi, 0.00001))
 print("parabolic for f3:", parabolic(f3, 0, 2 * math.pi, 0.00001))
-print("brent for f3:   ", brent(f3, 0, 2 * math.pi, 0.00001))
+print("brent for f3:    ", brent(f3, 0, 2 * math.pi, 0.00001))
 print()
 
 print("dich for f4:     ", dichotomy(f4, 0, 1, 0.00001))
 print("golden for f4:   ", golden_ratio(f4, 0, 1, 0.00001))
 print("fibb for f4:     ", fibb(f4, 0, 1, 0.00001))
 print("parabolic for f4:", parabolic(f4, 0, 1, 0.00001))
-print("brent for f4:   ", brent(f4, 0, 1, 0.00001))
+print("brent for f4:    ", brent(f4, 0, 1, 0.00001))
 print()
 
 print("dich for f5:     ", dichotomy(f5, 0.5, 2.5, 0.00001))
 print("golden for f5:   ", golden_ratio(f5, 0.5, 2.5, 0.00001))
 print("fibb for f5:     ", fibb(f5, 0.5, 2.5, 0.00001))
 print("parabolic for f5:", parabolic(f5, 0.5, 2.5, 0.00001))
-print("brent for f5:   ", brent(f5, 0.5, 2.5, 0.00001))
+print("brent for f5:    ", brent(f5, 0.5, 2.5, 0.00001))
 print()
 
