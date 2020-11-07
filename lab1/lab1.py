@@ -1,6 +1,7 @@
 import math
 import csv
 import os
+import matplotlib.pyplot as plt
 
 
 def f1(x):
@@ -149,6 +150,12 @@ def fibb(f, a, b, e):
     return r, N
 
 
+def parabmin(x1, x2, x3, fx1, fx2, fx3):
+    u = x2 - ((x2 - x1) ** 2 * (fx2 - fx3) - (x2 - x3) ** 2 * (fx2 - fx1)) / \
+        (2 * ((x2 - x1) * (fx2 - fx3) - (x2 - x3) * (fx2 - fx1)))
+    return u
+
+
 def parabolic(f, a, b, e):
     writer = open_file('parabolic', f)
     prev_len = b - a
@@ -162,8 +169,7 @@ def parabolic(f, a, b, e):
     fx2 = f(x2)
     fx3 = f(x3)
 
-    u = x2 - ((x2 - x1) ** 2 * (fx2 - fx3) - (x2 - x3) ** 2 * (fx2 - fx1)) / \
-        (2 * ((x2 - x1) * (fx2 - fx3) - (x2 - x3) * (fx2 - fx1)))
+    u = parabmin(x1, x2, x3, fx1, fx2, fx3)
     u1 = x1
 
     fu = f(u)
@@ -195,8 +201,7 @@ def parabolic(f, a, b, e):
         prev_len = b - a
 
         u1 = u
-        u = x2 - ((x2 - x1) ** 2 * (fx2 - fx3) - (x2 - x3) ** 2 * (fx2 - fx1)) / \
-            (2 * ((x2 - x1) * (fx2 - fx3) - (x2 - x3) * (fx2 - fx1)))
+        u = parabmin(x1, x2, x3, fx1, fx2, fx3)
 
         fu = f(u)
 
@@ -204,15 +209,8 @@ def parabolic(f, a, b, e):
     return r, N
 
 
-def parabmin(x1, x2, x3, fx1, fx2, fx3):
-    u = x2 - ((x2 - x1) ** 2 * (fx2 - fx3) - (x2 - x3) ** 2 * (fx2 - fx1)) / \
-        (2 * ((x2 - x1) * (fx2 - fx3) - (x2 - x3) * (fx2 - fx1)))
-    return u
-
-
 def brent(f, a, b, e):
     writer = open_file('brent', f)
-    prev_len = b - a
     N = 0
 
     eps = e
@@ -227,8 +225,6 @@ def brent(f, a, b, e):
     d = c - a
     e = d
     u = parabmin(a, x, b, f(a), fx, f(b))
-    last = [a, c]
-    current = [a, c, f(a), f(b)]
     while c - a >= eps:
         N += 1
         g = e
@@ -290,10 +286,38 @@ def brent(f, a, b, e):
     return (u, fu), N
 
 
-# TODO: do it in cycle with arrays of functions, intervals and methods
+methods = [dichotomy, golden_ratio, fibb, parabolic, brent]
+functions = [f1, f2, f3, f4, f5]
+intervals = [(-0.5, 0.5), (6, 9.9), (0, 2 * math.pi), (0, 1), (0.5, 2.5)]
+e_start = 0.00011
+e_end = 0.00001
+count = 100
+step = (e_start - e_end) / count
 print("info: (x, f(x))\n")
 
-print("dich for f1:     ", dichotomy(f1, -0.5, 0.5, 0.00001))
+for method in methods:
+    for fn in range(len(functions)):
+        best = ((0, math.inf), 0)
+        es = []
+        ns = []
+        for i in range(0, count + 1):
+            e = e_start - step * i
+            function = functions[fn]
+            result = method(function, intervals[fn][0], intervals[fn][1], e)
+            es.append(math.log10(e))
+            ns.append(result[1])
+            if result[0][1] < best[0][1]:
+                best = result
+        title = method.__str__().split()[1] + " for " + function.__str__().split()[1]
+        plt.plot(es, ns)
+        print(title + " :", best)
+    plt.title(method.__str__().split()[1])
+    plt.show()
+    print()
+
+
+
+"""print("dich for f1:     ", dichotomy(f1, -0.5, 0.5, 0.00001))
 print("golden for f1:   ", golden_ratio(f1, -0.5, 0.5, 0.00001))
 print("fibb for f1:     ", fibb(f1, -0.5, 0.5, 0.00001))
 print("parabolic for f1:", parabolic(f1, -0.5, 0.5, 0.00001))
@@ -326,5 +350,5 @@ print("golden for f5:   ", golden_ratio(f5, 0.5, 2.5, 0.00001))
 print("fibb for f5:     ", fibb(f5, 0.5, 2.5, 0.00001))
 print("parabolic for f5:", parabolic(f5, 0.5, 2.5, 0.00001))
 print("brent for f5:    ", brent(f5, 0.5, 2.5, 0.00001))
-print()
+print()"""
 
