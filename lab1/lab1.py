@@ -225,7 +225,7 @@ def brent(f, a, b, e):
     d = c - a
     e = d
     u = parabmin(a, x, b, f(a), fx, f(b))
-    while c - a >= eps:
+    while abs(f(c) - f(a)) >= eps:
         N += 1
         g = e
         e = d
