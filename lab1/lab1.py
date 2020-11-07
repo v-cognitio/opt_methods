@@ -65,7 +65,7 @@ def dichotomy(f, a, b, e):
     return r, N
 
 
-def golden_ratio(f, a, b, e):
+def golden(f, a, b, e):
     writer = open_file('golden', f)
     prev_len = b - a
     N = 0
@@ -286,7 +286,7 @@ def brent(f, a, b, e):
     return (u, fu), N
 
 
-methods = [dichotomy, golden_ratio, fibb, parabolic, brent]
+methods = [dichotomy, golden, fibb, parabolic, brent]
 functions = [f1, f2, f3, f4, f5]
 intervals = [(-0.5, 0.5), (6, 9.9), (0, 2 * math.pi), (0, 1), (0.5, 2.5)]
 e_start = 0.00011
@@ -310,9 +310,10 @@ for method in methods:
                 best = result
         title = method.__str__().split()[1] + " for " + function.__str__().split()[1]
         plt.plot(es, ns)
+        plt.title(title)
+        plt.savefig(method.__str__().split()[1] + '/' + function.__str__().split()[1] + '.png')
+        plt.close()
         print(title + " :", best)
-    plt.title(method.__str__().split()[1])
-    plt.show()
     print()
 
 
