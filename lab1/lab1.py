@@ -40,7 +40,7 @@ def dichotomy(f, a, b, e):
     N = 0
 
     while b - a > e:
-        N += 1
+        N += 2
         x1 = (a + b - e / 2) / 2
         x2 = (a + b + e / 2) / 2
         fx1 = f(x1)
@@ -68,7 +68,7 @@ def dichotomy(f, a, b, e):
 def golden(f, a, b, e):
     writer = open_file('golden', f)
     prev_len = b - a
-    N = 0
+    N = 2
 
     c = (math.sqrt(5) - 1) / 2
     x1 = b - c * (b - a)
@@ -114,7 +114,7 @@ def calc_fibb_till(e):
 def fibb(f, a, b, e):
     writer = open_file('fibb', f)
     prev_len = b - a
-    N = 0
+    N = 2
 
     fibs = calc_fibb_till((b - a) / e)
     n = len(fibs) - 1
@@ -159,7 +159,7 @@ def parabmin(x1, x2, x3, fx1, fx2, fx3):
 def parabolic(f, a, b, e):
     writer = open_file('parabolic', f)
     prev_len = b - a
-    N = 0
+    N = 4
 
     x1 = a
     x3 = b
@@ -211,23 +211,22 @@ def parabolic(f, a, b, e):
 
 def brent(f, a, b, eps):
     writer = open_file('brent', f)
-    N = 0
+    N = 1
 
     c = b
-    x = (a + c)/2
+    x = (a + c) / 2
     w = x
     v = w
     fx = f(x)
     fw = fx
     fv = fw
-    k = (3 - math.sqrt(5))/2
+    k = (3 - math.sqrt(5)) / 2
     d = c - a
     e = d
     u = parabmin(a, x, b, f(a), fx, f(b))
     u1 = c
     stopper = 0
     while abs(u1 - u) >= eps or stopper <= 1:
-        N += 1
         g = e
         e = d
         u1 = u
@@ -242,11 +241,11 @@ def brent(f, a, b, eps):
             fx2 = fxu[1]
             fx3 = fxu[2]
             un = parabmin(x1, x2, x3, fx1, fx2, fx3)
-        if a + eps <= un <= c - eps and abs(un - x) < g/2:
+        if a + eps <= un <= c - eps and abs(un - x) < g / 2:
             u = un
             d = abs(u - x)
         else:
-            if x < (c + a)/2:
+            if x < (c + a) / 2:
                 u = x + k * (c - x)
                 d = c - x
             else:
@@ -255,6 +254,7 @@ def brent(f, a, b, eps):
         if d < eps:
             u = x + math.copysign(1, u - x) * eps
         fu = f(u)
+        N += 1
         last = [a, c]
         if fu <= fx:
             if u >= x:
@@ -295,7 +295,7 @@ e_start = 0.00011
 e_end = 0.00001
 count = 100
 step = (e_start - e_end) / count
-print("info: (x, f(x))\n")
+print("info: ((x, f(x)), N)\n")
 
 for method in methods:
     for fn in range(len(functions)):
@@ -318,38 +318,3 @@ for method in methods:
         print(title + " :", best)
     print()
 
-#
-# print("dich for f1:     ", dichotomy(f1, -0.5, 0.5, 0.00001))
-# print("golden for f1:   ", golden(f1, -0.5, 0.5, 0.00001))
-# print("fibb for f1:     ", fibb(f1, -0.5, 0.5, 0.00001))
-# print("parabolic for f1:", parabolic(f1, -0.5, 0.5, 0.00001))
-# print("brent for f1:    ", brent(f1, -0.5, 0.5, 0.00001))
-# print()
-#
-# print("dich for f2:     ", dichotomy(f2, 6, 9.9, 0.00001))
-# print("golden for f2:   ", golden(f2, 6, 9.9, 0.00001))
-# print("fibb for f2:     ", fibb(f2, 6, 9.9, 0.00001))
-# print("parabolic for f2:", parabolic(f2, 6, 9.9, 0.00001))
-# print("brent for f2:    ", brent(f2, 6, 9.9, 0.00001))
-# print()
-#
-# print("dich for f3:     ", dichotomy(f3, 0, 2 * math.pi, 0.00001))
-# print("golden for f3:   ", golden(f3, 0, 2 * math.pi, 0.00001))
-# print("fibb for f3:     ", fibb(f3, 0, 2 * math.pi, 0.00001))
-# print("parabolic for f3:", parabolic(f3, 0, 2 * math.pi, 0.00001))
-# print("brent for f3:    ", brent(f3, 0, 2 * math.pi, 0.00001))
-# print()
-#
-# print("dich for f4:     ", dichotomy(f4, 0, 1, 0.00001))
-# print("golden for f4:   ", golden(f4, 0, 1, 0.00001))
-# print("fibb for f4:     ", fibb(f4, 0, 1, 0.00001))
-# print("parabolic for f4:", parabolic(f4, 0, 1, 0.00001))
-# print("brent for f4:    ", brent(f4, 0, 1, 0.00001))
-# print()
-#
-# print("dich for f5:     ", dichotomy(f5, 0.5, 2.5, 0.00001))
-# print("golden for f5:   ", golden(f5, 0.5, 2.5, 0.00001))
-# print("fibb for f5:     ", fibb(f5, 0.5, 2.5, 0.00001))
-# print("parabolic for f5:", parabolic(f5, 0.5, 2.5, 0.00001))
-# print("brent for f5:    ", brent(f5, 0.5, 2.5, 0.00001))
-# print()
