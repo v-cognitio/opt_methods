@@ -347,7 +347,6 @@ def brent(a, c, eps, func_index):
                 v = u
                 fv = fu
                 fvd = fud
-        print(prev_u - u)
         if counter > 1:
             if abs(prev_u - u) < eps:
                 break
@@ -367,7 +366,7 @@ for number, interval in zip(numbers, intervals):
 print(table.get_string())
 
 for i in numbers:
-    epsilons = np.linspace(1, 9, 10)
+    epsilons = np.linspace(1, 9, 9)
     iterations = [brent(-0.5, 0.5, 10 ** -eps, i)[1] for eps in epsilons]
     plt.plot(np.log10(10 ** -epsilons), iterations)
     plt.grid()
@@ -556,13 +555,15 @@ def steepest_descent(x, func_index, eps):
     func = get_func(func_index)
     func_der = get_func_der(func_index)
     variable_number = get_func_dimension(func_index)
-    x = [0] * variable_number
+    # x = [0] * variable_number
     points = [(x, func(x))]
     coordinates = []
     counter = 0
+    # print(func_index)
     while True:
         counter += 1
         grad = [func_der(x, i) for i in range(1, variable_number + 1)]
+        # print(grad)
         new_x_func = lambda step: list(map(operator.sub, x, [step * grad[i] for i in range(len(grad))]))
         step_func = lambda step: func(new_x_func(step))
         result_step = golden_section(0, 10, step_func, 10 ** -5)
@@ -571,6 +572,7 @@ def steepest_descent(x, func_index, eps):
         x = new_x
         points.append((x, func(x)))
         if abs(points[-1][1] - points[-2][1]) < eps:
+            # print('done')
             break
     return coordinates, points, counter
 
@@ -607,9 +609,7 @@ for i in range(1, num_funcs + 2):
     iterations = []
     epsilons = np.linspace(1, 10, 10)
     for eps in epsilons:
-        arg = [0.0, 0.0]
-        if i == 4:
-            arg = [0.0, 0.0, 0.0, 0.0]
+        arg = init_approx(i)
         coordinates, points, counter = steepest_descent(arg, i, 10 ** -eps)
         iterations.append(counter)
     plt.plot(np.log10(10 ** -epsilons), iterations)
